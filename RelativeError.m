@@ -1,18 +1,19 @@
-function [e,ee,eta]=RelativeError(F,Z)
+function err=RelativeError(Z)
 %%
 theta=[linspace(0,2*pi,20000)].';
-z=F(theta,Z{1},Z{2});
+F=@(theta,C) exp(i*kron(theta,-1:(size(C,1)-2)))*C;
+z=F(theta,Z);
 
 r=abs(z(2:end)-z(1:end-1))';
 r=[0,cumsum(r)];
 r=r/r(end);
 
 H=0;
-save Boundary_data5.mat r z H
+save Boundary_data3.mat r z H
 
 %%
 eta=linspace(0,1,5000);
-z1=Boundary(eta,'C','Boundary_data5.mat');
+z1=Boundary(eta,'C','Boundary_data3.mat');
 z2=Boundary(eta,'C','Boundary_data1.mat');
 
 %%
@@ -44,8 +45,8 @@ l1=abs((x2-x1)+i*(y2-y1));
 % l2=abs((x4-x3)+i*(y4-y3));
 
 ee=abs((x1-x3).*(y2-y4)-(y1-y3).*(x2-x4))/2;
-e=sum(ee)/sum(l1);
-ee=ee./l1/sum(l1);
+err=sum(ee)/sum(l1);
+
 
 end
 
